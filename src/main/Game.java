@@ -106,7 +106,7 @@ public class Game implements Runnable {
 
             if(System.currentTimeMillis() - framesCounter >= 1000){
                 framesCounter = System.currentTimeMillis();
-                System.out.println("Frames: " + frames + " | Updates: " + updates);
+                System.out.println("FPS: " + frames + ", Updates: " + updates);
                 frames = 0;
                 updates = 0;
             }
