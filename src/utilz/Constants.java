@@ -3,6 +3,75 @@ package utilz;
 import main.Game;
 
 public class Constants {
+    public static final float GRAVITY = 0.04f * Game.SCALE;
+
+    public static class EnemyConstants{
+        public static final int SKELETON = 0;
+
+        public static final int IDLE = 3;
+        public static final int ATTACK = 0;
+        public static final int RUN = 2;
+        public static final int HIT = 4;
+        public static final int DEAD = 1;
+
+        public static final int SKELETON_WIDTH_DEFAULT = 64;
+        public static final int SKELETON_HEIGHT_DEFAULT = 64;
+
+        public static final int SKELETON_WIDTH = (int)(SKELETON_WIDTH_DEFAULT * Game.SCALE * 0.8);
+        public static final int SKELETON_HEIGHT = (int)(SKELETON_HEIGHT_DEFAULT * Game.SCALE * 0.8);
+
+        public static final int SKELETON_DRAW_X = (int)(17 * Game.SCALE);
+        public static final int SKELETON_DRAW_Y = (int)(13 * Game.SCALE);
+
+        public static int GetMaxHealth(int enemy_type) {
+            switch (enemy_type) {
+                case SKELETON:
+                    return 10;
+                default:
+                    return 1;
+            }
+        }
+
+        public static int GetEnemyDmg(int enemy_type) {
+            switch (enemy_type) {
+                case SKELETON:
+                    return 5;
+                default:
+                    return 0;
+            }
+
+        }
+
+        public static int GetSpriteAmounts(int enemyType, int enemyState){
+            switch (enemyType){
+                case SKELETON:
+                    switch (enemyState){
+                        case IDLE:
+                            return 4;
+                        case ATTACK:
+                        case DEAD:
+                            return 13;
+                        case RUN:
+                            return 12;
+                        case HIT:
+                            return 3;
+                    }
+            }
+            return 0;
+        }
+    }
+
+    public static class Environment{
+        public static final int BIG_CLOUDS_WIDTH_DEFAULT = 448;
+        public static final int BIG_CLOUDS_HEIGHT_DEFAULT = 101;
+        public static final int SMALL_CLOUDS_WIDTH_DEFAULT = 74;
+        public static final int SMALL_CLOUDS_HEIGHT_DEFAULT = 24;
+
+        public static final int BIG_CLOUDS_WIDTH = (int)(BIG_CLOUDS_WIDTH_DEFAULT * Game.SCALE);
+        public static final int BIG_CLOUDS_HEIGHT = (int)(BIG_CLOUDS_HEIGHT_DEFAULT * Game.SCALE);
+        public static final int SMALL_CLOUDS_WIDTH = (int)(SMALL_CLOUDS_WIDTH_DEFAULT * Game.SCALE);
+        public static final int SMALL_CLOUDS_HEIGHT = (int)(SMALL_CLOUDS_HEIGHT_DEFAULT * Game.SCALE);
+    }
 
     public static class UI{
         public static class Buttons{

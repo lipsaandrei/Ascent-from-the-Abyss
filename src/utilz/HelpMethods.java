@@ -1,8 +1,15 @@
 package utilz;
 
+import entities.Player;
+import entities.Skeleton;
 import main.Game;
 
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
+import static utilz.Constants.EnemyConstants.SKELETON;
 
 public class HelpMethods {
     public static boolean CanMoveHere(float x, float y, float width, float height, int[][]lvlData){
@@ -15,7 +22,8 @@ public class HelpMethods {
     }
 
     private static boolean IsSolid(float x, float y, int[][] lvlData){
-        if(x < 0 || x >= Game.GAME_WIDTH)
+        int maxWidth = lvlData[0].length * Game.TILES_SIZE;
+        if(x < 0 || x >= maxWidth)
             return true;
         if(y < 0 || y >= Game.GAME_HEIGHT)
             return true;
@@ -23,7 +31,11 @@ public class HelpMethods {
         float xIndex = x/ Game.TILES_SIZE;
         float yIndex = y/ Game.TILES_SIZE;
 
-        int value = lvlData[(int)yIndex][(int)xIndex];
+        return IsTileSolid((int)xIndex, (int)yIndex, lvlData);
+    }
+
+    public static boolean IsTileSolid(int x, int y, int[][] lvlData){
+        int value = lvlData[y][x];
         if(value >= 48 || value < 0 || value != 11)
             return true;
         return false;
@@ -62,5 +74,64 @@ public class HelpMethods {
             if(!IsSolid(hitbox.x + hitbox.width, hitbox.y + hitbox.height + 1, lvlData))
                 return false;
         return true;
+    }
+
+    public static boolean IsFloor(Rectangle2D.Float hitbox, float xSpeed, int[][] lvlData){
+        return IsSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, lvlData);
+    }
+
+    public static boolean IsAllTilesWalkable(int start, int end, int y, int[][] lvlData){
+        for(int i = 0; i < end - start; i++){
+            if(IsTileSolid(start + i, y, lvlData))
+                return false;
+            if(!IsTileSolid(start + i, y + 1, lvlData))
+                return false;
+        }
+        return true;
+    }
+
+    public static boolean IsSightClear(int[][] lvlData, Rectangle2D.Float firstHitBox, Rectangle2D.Float secondHitBox,int tileY){
+        int firstXTile = (int) (firstHitBox.x / Game.TILES_SIZE);
+        int secondXTile = (int) (secondHitBox.x / Game.TILES_SIZE);
+        if(firstXTile < secondXTile)
+            return IsAllTilesWalkable(firstXTile, secondXTile, tileY, lvlData);
+        else return IsAllTilesWalkable(secondXTile, firstXTile, tileY, lvlData);
+    }
+
+    public static int[][] GetLevelData(BufferedImage img){
+        int[][] levelData = new int[img.getHeight()][img.getWidth()];
+        for(int y = 0; y < img.getHeight(); y++)
+            for(int x = 0; x < img.getWidth(); x++){
+                Color color = new Color(img.getRGB(x, y));
+                int value = color.getRed();
+                if(value >= 48)
+                    value = 0;
+                levelData[y][x] = value;
+            }
+        return levelData;
+    }
+
+    public static ArrayList<Skeleton> GetSkeletons(BufferedImage img){
+        ArrayList<Skeleton> list = new ArrayList<>();
+
+        for(int y = 0; y < img.getHeight(); y++)
+            for(int x = 0; x < img.getWidth(); x++){
+                Color color = new Color(img.getRGB(x, y));
+                int value = color.getGreen();
+                if(value == SKELETON)
+                    list.add(new Skeleton(x * Game.TILES_SIZE, y * Game.TILES_SIZE));
+            }
+        return list;
+    }
+
+    public static Point GetPlayerPoint(BufferedImage img){
+        for(int y = 0; y < img.getHeight(); y++)
+            for(int x = 0; x < img.getWidth(); x++){
+                Color color = new Color(img.getRGB(x, y));
+                int value = color.getGreen();
+                if(value == 100)
+                    return new Point(x * Game.TILES_SIZE, y * Game.TILES_SIZE);
+            }
+        return new Point(1 * Game.TILES_SIZE, 1 * Game.TILES_SIZE);
     }
 }

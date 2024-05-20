@@ -3,6 +3,7 @@ package main;
 import entities.Player;
 import gamestates.*;
 import gamestates.Menu;
+import utilz.LoadSave;
 
 import java.awt.*;
 
@@ -24,7 +25,9 @@ public class Game implements Runnable {
 
     private final int frame_per_second = 120;
     private final int ups = 200;
+
     public Game(){
+
         initClasses();
         gamePanel = new GamePanel(this);
         gameWindow = new GameWindow(gamePanel);
